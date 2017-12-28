@@ -1,0 +1,5 @@
+sqlite> .schema users
+CREATE TABLE users(user_id integer primary key, user_name varchar(128), status int, address text, phone text, international int);
+
+sqlite> .schema pairings
+CREATE TABLE pairings(pairing_id integer primary key, year int, type int, santa int, santee int, status int);
