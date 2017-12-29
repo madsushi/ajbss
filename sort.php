@@ -12,7 +12,7 @@
       $dbh = new PDO($dir) or die("can't talk to SQLite");
 
       ## query to retrieve list of users, this needs to be more strict (only users that signed up, etc)
-      $user_id_query = "SELECT user_id FROM users WHERE status=0 limit 5";
+      $user_id_query = "SELECT user_id FROM users WHERE status=0 limit 10";
 
       ## query to retrieve list of pairings
       $pairing_query = "SELECT santa, santee, year FROM pairings where type = ?";
@@ -23,11 +23,15 @@
 
       ## set some defaults, these would be selected by admins
       $year = $_GET["year"];
-      $type = 5;
+      $type = $_GET["type"];
       $pairing_array = [];
       $status = 0;
       $user_id_list = [];
       $insert_array = [];
+      $next_year = $year + 1;
+
+      echo "<p><a href='/ajbss/sort.php?year=" . $next_year . "&type=" . $type . "'>NEXT YEAR</a></p><p><a href='/ajbss/delete.php'>DELETE DATA (no worries)<
+/a></p>";
 
       ## retrieve the data from SQLite and initialize variable
       $user_id_results = $dbh->query($user_id_query)->fetchAll(PDO::FETCH_COLUMN);
@@ -59,7 +63,7 @@
 
       ## this punches out $santa_list
       foreach($santa_list as $key=>$santa) {
-        echo "<p>Key: " . $key . " Santa: " . $santa . "</p>";
+        echo "Santa: " . $santa . "<br>";
 
 
         $candidate_list = $santee_list;
@@ -77,16 +81,16 @@
 
         if(!isset($candidate)) {
 
-          echo "<h1>CANDIDATE RNG FAILED, TRY AGAIN</h1>";
+          echo "<h1><font color=red>CANDIDATE RNG FAILED, TRY AGAIN</font></h1>";
           exit;
 
         }
 
         ## punch out the $santee_list
         unset($santee_list[$candidate]);
-        
+
         ## throwaway to display / check code
-        echo "NEW Year: " . $year . " | Santa ID: " . $santa . " | Santee ID: " . $candidate . "<br><br>";
+        echo "<b><font color=green>NEW Year: " . $year . " | Santa ID: " . $santa . " | Santee ID: " . $candidate . "</font></b><br><br>";
 
         $insert_array[$santa]["year"] = $year;
         $insert_array[$santa]["type"] = $type;
